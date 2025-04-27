@@ -19,15 +19,17 @@ const usersData = [
     { id: 29, name: 'Cynthia', age: 32, specialty: 'ventas' }, { id: 30, name: 'Derek', age: 30, specialty: 'marketing' },
 ];
 
+
 function templateUser(user){
     return `
     <li>
-        <h3>${user.name}</h2>
-        <p>Edad: ${user.age}</p>
-        <p>Especialidad: ${user.specialty}</p>
+    <h3>${user.name}</h2>
+    <p>Edad: ${user.age}</p>
+    <p>Especialidad: ${user.specialty}</p>
     </li>`
 }
 
+const endpoints = ["/marketing", "/developers", "/QAs", "/ventas"];
 
 app.get('/', (req, res) => {
     let response = `
@@ -46,6 +48,31 @@ app.get('/', (req, res) => {
     response += `</ul>`;
   res.send(response);
 });
+
+
+for (endpoint of endpoints) {
+    app.get(endpoint, (req, res) => {
+        let response = `
+        <div> Generado desde un Bucle</div>
+        <div>
+            <a href="/">Index</a>
+            <a href="/marketing">Marketing</a>
+            <a href="/developers">Desarrolladores</a>
+            <a href="/QAs">QA</a>
+            <a href="/ventas">Ventas</a>
+        </div>
+        <h2>Lista de usuarios de ${req.path}</h2>
+        <ul>`;
+        path = req.path.replace('/','');
+        usersData.forEach(user => {
+            if(user.specialty==path) response += templateUser(user);
+        });
+        response += `</ul>`;
+      res.send(response);
+    });
+}
+/*
+
 app.get('/marketing', (req, res) => {
     let response = `
     <div>
@@ -119,7 +146,7 @@ app.get('/ventas', (req, res) => {
     response += `</ul>`;
   res.send(response);
 });
-
+*/
 app.use((req, res) => {
   res
     .status(404)
